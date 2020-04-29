@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { createBook } from '../actions/index';
+import { addBookToList } from '../actions/index';
 import '../assets/css/BookForm.css';
 import { categories } from '../constants/categories';
 
@@ -17,6 +17,7 @@ class BooksForm extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.selectForm = React.createRef();
   }
 
   handleChange(e) {
@@ -26,16 +27,14 @@ class BooksForm extends React.Component {
   }
 
   handleSubmit(e) {
-    const { title } = this.state;
-    const { createBook } = this.props;
+    const { addBookToList } = this.props;
     e.preventDefault();
-    if (title) {
-      createBook(this.state);
-      this.reset();
-    }
+    addBookToList(this.state);
+    this.reset();
   }
 
   reset() {
+    this.selectForm.current.scrollIntoView({ behavior: 'smooth' });
     this.setState({
       // id: Math.floor(Math.random() * 1000),
       title: '',
@@ -46,11 +45,21 @@ class BooksForm extends React.Component {
 
   render() {
     const { title, author, genre } = this.state;
+    const { status } = this.props;
+    const { errors } = status;
+    const errorDiv = error => (
+      <div key={error}>
+        {error}
+      </div>
+    );
     return (
       <div className="bg-header round-bottom box-shadow">
         <div className="center max-width-90 border-top">
           <div className="formTitle">Add New Book</div>
-          <form onSubmit={this.handleSubmit} className="bookForm">
+          <div className="errors">
+            {errors.map(error => errorDiv(error))}
+          </div>
+          <form ref={this.selectForm} onSubmit={this.handleSubmit} className="bookForm">
             <div>
               <input
                 placeholder="Book Title"
@@ -81,13 +90,18 @@ class BooksForm extends React.Component {
 }
 
 BooksForm.propTypes = {
-  createBook: PropTypes.func.isRequired,
+  status: PropTypes.instanceOf(Object).isRequired,
+  addBookToList: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => ({
+  status: state.status,
+});
+
 const mapDispatchToProps = dispatch => ({
-  createBook: book => {
-    dispatch(createBook(book));
+  addBookToList: book => {
+    dispatch(addBookToList(book));
   },
 });
 
-export default connect(null, mapDispatchToProps)(BooksForm);
+export default connect(mapStateToProps, mapDispatchToProps)(BooksForm);

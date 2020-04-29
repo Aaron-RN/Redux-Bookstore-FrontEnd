@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Book from '../components/Books';
-import { removeBook, changeFilter } from '../actions/index';
+import { removeBookFromList, changeFilter, fetchBookList } from '../actions/index';
 import CategoryFilter from '../components/CategoryFilter';
 import '../assets/css/BookList.css';
 import Logo from '../assets/images/reactRedux.svg';
@@ -10,9 +10,28 @@ import reactLogo from '../assets/images/logo.svg';
 import reduxLogo from '../assets/images/redux.svg';
 
 const BookList = ({
-  books, filter, removeBook, changeFilter,
+  books, filter, status, fetchBookList, removeBookFromList, changeFilter,
 }) => {
-  const filteredBooks = (filter !== 'All') ? books.filter(book => book.category === filter) : books;
+  // useEffect(() => {
+  //   fetchBookList();
+  // }, []);
+  const filteredBooks = (filter !== 'All') ? books.filter(book => book.genre === filter) : books;
+
+  const { isLoading } = status;
+  const renderMain = isLoading
+    ? (
+      <div className="text-center">
+        <div className="loader center" />
+        <h1 className="text-white">Loading...</h1>
+      </div>
+    )
+    : (
+      <div className="center max-width-90 bookSection">
+        {filteredBooks.map(book => (
+          <Book book={book} key={book.id + book.title} removeBookFromList={removeBookFromList} />
+        ))}
+      </div>
+    );
   return (
     <div>
       <header className="m-b bg-header round-top">
@@ -36,11 +55,7 @@ const BookList = ({
         </div>
       </header>
       <main className="bg-main">
-        <div className="center max-width-90 bookSection">
-          {filteredBooks.map(book => (
-            <Book book={book} key={book.id} removeBook={removeBook} />
-          ))}
-        </div>
+        {renderMain}
       </main>
     </div>
   );
@@ -53,18 +68,24 @@ BookList.defaultProps = {
 BookList.propTypes = {
   books: PropTypes.instanceOf(Array).isRequired,
   filter: PropTypes.string,
-  removeBook: PropTypes.func.isRequired,
+  status: PropTypes.instanceOf(Object).isRequired,
+  fetchBookList: PropTypes.func.isRequired,
+  removeBookFromList: PropTypes.func.isRequired,
   changeFilter: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   books: state.books,
   filter: state.filter,
+  status: state.status,
 });
 
 const mapDispatchToProps = dispatch => ({
-  removeBook: book => {
-    dispatch(removeBook(book));
+  fetchBookList: () => {
+    dispatch(fetchBookList());
+  },
+  removeBookFromList: book => {
+    dispatch(removeBookFromList(book));
   },
   changeFilter: category => {
     dispatch(changeFilter(category));
