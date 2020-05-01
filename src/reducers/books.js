@@ -1,4 +1,7 @@
-import { CREATE_BOOK, REMOVE_BOOK, FETCH_BOOKLIST } from '../actions/index';
+import {
+  CREATE_BOOK, REMOVE_BOOK, FETCH_BOOKLIST,
+  CREATE_COMMENT, REMOVE_COMMENT,
+} from '../actions/index';
 
 const bookReducer = (state = [], action) => {
   switch (action.type) {
@@ -7,6 +10,10 @@ const bookReducer = (state = [], action) => {
     case CREATE_BOOK:
       return [...state, action.book];
     case REMOVE_BOOK:
+      return state.filter(book => book.id !== action.book.id);
+    case CREATE_COMMENT:
+      return [...state, action.book];
+    case REMOVE_COMMENT:
       return state.filter(book => book.id !== action.book.id);
     default:
       return state;

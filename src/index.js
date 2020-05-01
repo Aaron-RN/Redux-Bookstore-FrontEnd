@@ -7,15 +7,18 @@ import './assets/css/index.css';
 
 import rootReducer from './reducers/index';
 import App from './App';
-import { fetchBookList } from './actions';
+import { fetchBookList, fetchGenres } from './actions';
 
 const initialState = {
   books: [],
+  genres: ['Action', 'Biography', 'Kids', 'Learning', 'Sci-Fi', 'Horor', 'History'],
   status: { isLoading: false, errors: [] },
+  showModal: false,
 };
 
 const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
 store.dispatch(fetchBookList());
+store.dispatch(fetchGenres());
 
 ReactDOM.render(
   <Provider store={store}>

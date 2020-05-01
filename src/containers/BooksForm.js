@@ -14,6 +14,7 @@ class BooksForm extends React.Component {
       title: '',
       author: '',
       genre: categories[0],
+      comments: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -40,12 +41,13 @@ class BooksForm extends React.Component {
       title: '',
       author: '',
       genre: categories[0],
+      comments: [],
     });
   }
 
   render() {
     const { title, author, genre } = this.state;
-    const { status } = this.props;
+    const { status, genres } = this.props;
     const { errors } = status;
     const errorDiv = error => (
       <div key={error}>
@@ -77,7 +79,7 @@ class BooksForm extends React.Component {
               />
             </div>
             <select className="font-header" name="genre" placeholder="Genre" value={genre} onChange={this.handleChange}>
-              {categories.map(category => (
+              {genres.map(category => (
                 <option key={category}>{category}</option>
               ))}
             </select>
@@ -91,11 +93,13 @@ class BooksForm extends React.Component {
 
 BooksForm.propTypes = {
   status: PropTypes.instanceOf(Object).isRequired,
+  genres: PropTypes.instanceOf(Array).isRequired,
   addBookToList: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   status: state.status,
+  genres: state.genres,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Books = ({ book, removeBookFromList, toggleModal }) => {
+const Comments = ({ book, addCommentToBook, removeCommentFromBook }) => {
   const percentage = Math.floor(Math.random() * 100);
   const piePercent = Math.round(percentage / 25) * 25;
   return (
@@ -11,8 +11,8 @@ const Books = ({ book, removeBookFromList, toggleModal }) => {
         <h2 className="title font-header">{book.title}</h2>
         <h4 className="author">{book.author}</h4>
         <div className="actions">
-          <button type="button" onClick={() => toggleModal()}>Comments</button>
-          <button type="button" onClick={() => removeBookFromList(book)}>
+          <button type="button" disabled>Comments</button>
+          <button type="button" onClick={() => removeCommentFromBook(book)}>
             Remove Book
           </button>
           <button type="button" disabled>Edit</button>
@@ -37,15 +37,16 @@ const Books = ({ book, removeBookFromList, toggleModal }) => {
   );
 };
 
-Books.propTypes = {
+Comments.propTypes = {
   book: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
     author: PropTypes.string,
     genre: PropTypes.string,
+    comments: PropTypes.instanceOf(Array),
   }).isRequired,
-  removeBookFromList: PropTypes.func.isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  addCommentToBook: PropTypes.func.isRequired,
+  removeCommentFromBook: PropTypes.func.isRequired,
 };
 
-export default Books;
+export default Comments;
