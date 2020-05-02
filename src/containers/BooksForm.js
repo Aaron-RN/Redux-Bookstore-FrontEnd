@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addBookToList } from '../actions/index';
 import '../assets/css/BookForm.css';
-import { categories } from '../constants/categories';
-
 
 class BooksForm extends React.Component {
   constructor(props) {
     super(props);
+    const { genres } = this.props;
+
     this.state = {
       // id: Math.floor(Math.random() * 1000),
       title: '',
       author: '',
-      genre: categories[0],
+      genre: genres[0].name,
       comments: [],
     };
     this.handleChange = this.handleChange.bind(this);
@@ -36,11 +36,12 @@ class BooksForm extends React.Component {
 
   reset() {
     this.selectForm.current.scrollIntoView({ behavior: 'smooth' });
+    const { genres } = this.props;
     this.setState({
       // id: Math.floor(Math.random() * 1000),
       title: '',
       author: '',
-      genre: categories[0],
+      genre: genres[0].name,
       comments: [],
     });
   }
@@ -79,8 +80,8 @@ class BooksForm extends React.Component {
               />
             </div>
             <select className="font-header" name="genre" placeholder="Genre" value={genre} onChange={this.handleChange}>
-              {genres.map(category => (
-                <option key={category}>{category}</option>
+              {genres.map(genre => (
+                <option key={genre.id + genre.name}>{genre.name}</option>
               ))}
             </select>
             <button type="submit">Add Book</button>

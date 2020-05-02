@@ -2,7 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Comment from '../components/Comments';
-import { addCommentToBook, removeCommentFromBook, toggleModal } from '../actions/index';
+import Genre from '../components/Genres';
+import {
+  addCommentToBook, removeCommentFromBook, addGenreToDB, removeGenreFromDB, toggleModal,
+} from '../actions/index';
 import '../assets/css/modal.css';
 
 class Modal extends React.Component {
@@ -10,6 +13,7 @@ class Modal extends React.Component {
     super(props);
     this.state = {
       comment: '',
+      genre: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,22 +26,26 @@ class Modal extends React.Component {
   }
 
   handleSubmit(e) {
-    const { addCommentToBook, modal } = this.props;
+    const { addCommentToBook, addGenreToDB, modal } = this.props;
     const { selectedObject } = modal;
-    const { comment } = this.state;
+    const { comment, genre } = this.state;
     e.preventDefault();
-    addCommentToBook(selectedObject, comment);
+    if (e.target.name === 'comment') addCommentToBook(selectedObject, comment);
+    if (e.target.name === 'genre') addGenreToDB(genre);
     this.reset();
   }
 
   reset() {
     this.setState({
       comment: '',
+      genre: '',
     });
   }
 
   render() {
-    const { modal, removeCommentFromBook, toggleModal } = this.props;
+    const {
+      modal, genres, removeCommentFromBook, removeGenreFromDB, toggleModal,
+    } = this.props;
     const { selectedObject } = modal;
     const { comments } = selectedObject;
     let renderMain;
@@ -49,7 +57,7 @@ class Modal extends React.Component {
               <button
                 type="button"
                 className="modalClose"
-                onClick={() => toggleModal('comments', selectedObject)}
+                onClick={() => toggleModal('comments', {})}
               >
                 Close
               </button>
@@ -74,7 +82,45 @@ class Modal extends React.Component {
                 maxLength="450"
                 onChange={this.handleChange}
               />
-              <button type="button" onClick={this.handleSubmit}> Comment </button>
+              <button name="comment" type="button" onClick={this.handleSubmit}> Comment </button>
+            </footer>
+          </div>
+        </div>
+      );
+    }
+    if (modal.type === 'genres' && modal.showModal) {
+      renderMain = (
+        <div className="modal">
+          <div className="modalContent">
+            <header>
+              <button
+                type="button"
+                className="modalClose"
+                onClick={() => toggleModal('genres', {})}
+              >
+                Close
+              </button>
+            </header>
+            <main>
+              <h2>Genres</h2>
+              {genres.map(genre => (
+                <Genre
+                  genre={genre}
+                  key={genre.id + genre.name}
+                  removeGenreFromDB={removeGenreFromDB}
+                />
+              ))}
+            </main>
+            <footer className="genre-form">
+              <input
+                name="genre"
+                type="text"
+                placeholder="type genre here..."
+                minLength="3"
+                maxLength="30"
+                onChange={this.handleChange}
+              />
+              <button name="genre" type="button" onClick={this.handleSubmit}> Add Genre </button>
             </footer>
           </div>
         </div>
@@ -85,14 +131,17 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
+  genres: PropTypes.instanceOf(Array).isRequired,
   modal: PropTypes.instanceOf(Object).isRequired,
   addCommentToBook: PropTypes.func.isRequired,
   removeCommentFromBook: PropTypes.func.isRequired,
+  addGenreToDB: PropTypes.func.isRequired,
+  removeGenreFromDB: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  books: state.books,
+  genres: state.genres,
   modal: state.modal,
 });
 
@@ -102,6 +151,12 @@ const mapDispatchToProps = dispatch => ({
   },
   addCommentToBook: (book, comment) => {
     dispatch(addCommentToBook(book, comment));
+  },
+  removeGenreFromDB: genre => {
+    dispatch(removeGenreFromDB(genre));
+  },
+  addGenreToDB: genre => {
+    dispatch(addGenreToDB(genre));
   },
   toggleModal: (modalType, selectedObject) => {
     dispatch(toggleModal(modalType, selectedObject));

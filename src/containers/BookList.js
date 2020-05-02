@@ -10,7 +10,7 @@ import reactLogo from '../assets/images/logo.svg';
 import reduxLogo from '../assets/images/redux.svg';
 
 const BookList = ({
-  books, filter, status, removeBookFromList, changeFilter, toggleModal,
+  books, genres, filter, status, removeBookFromList, changeFilter, toggleModal,
 }) => {
   const filteredBooks = (filter !== 'All') ? books.filter(book => book.genre === filter) : books;
 
@@ -45,8 +45,15 @@ const BookList = ({
             <span className="text-grey">Books</span>
           </div>
           <div className="categories text-center">
-            <span className="text-grey">Genres</span>
-            <CategoryFilter changeFilter={changeFilter} />
+            <button
+              title="Add a new genre"
+              type="button"
+              className="genres-button"
+              onClick={() => toggleModal('genres', {})}
+            >
+              Genres +
+            </button>
+            <CategoryFilter changeFilter={changeFilter} genres={genres} />
           </div>
           <img className="logo show-sm" src={Logo} alt="react-redux logo" />
           <img className="logo show-md" src={reduxLogo} alt="redux logo" />
@@ -69,6 +76,7 @@ BookList.defaultProps = {
 
 BookList.propTypes = {
   books: PropTypes.instanceOf(Array).isRequired,
+  genres: PropTypes.instanceOf(Array).isRequired,
   filter: PropTypes.string,
   status: PropTypes.instanceOf(Object).isRequired,
   removeBookFromList: PropTypes.func.isRequired,
@@ -78,6 +86,7 @@ BookList.propTypes = {
 
 const mapStateToProps = state => ({
   books: state.books,
+  genres: state.genres,
   filter: state.filter,
   status: state.status,
 });

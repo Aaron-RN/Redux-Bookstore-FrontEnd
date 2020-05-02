@@ -11,7 +11,15 @@ import { fetchBookList, fetchGenres } from './actions';
 
 const initialState = {
   books: [],
-  genres: ['Action', 'Biography', 'Kids', 'Learning', 'Sci-Fi', 'Horor', 'History'],
+  genres: [
+    { id: 1, name: 'Action' },
+    { id: 2, name: 'Biography' },
+    { id: 3, name: 'Kids' },
+    { id: 4, name: 'Learning' },
+    { id: 5, name: 'Sci-Fi' },
+    { id: 6, name: 'Horor' },
+    { id: 7, name: 'History' },
+  ],
   status: { isLoading: false, errors: [] },
   modal: { showModal: false, type: 'comments', selectedObject: {} },
 };

@@ -7,7 +7,7 @@ const genresReducer = (state = [], action) => {
     case CREATE_GENRE:
       return [...state, action.genre];
     case REMOVE_GENRE:
-      return state.filter(genre => genre !== action.genre);
+      return state.filter(genre => genre.id !== action.genre.id);
     default:
       return state;
   }

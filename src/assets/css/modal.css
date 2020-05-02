@@ -9,6 +9,7 @@
 .comment-body {
   padding-left: 6px;
 }
+
 .comment > button {
   color: #FFF;
   background-color: black;
@@ -43,6 +44,37 @@
   font-weight: bold;
   font-size: 14px;
 }
+
+.genre {
+  display: inline-block;
+  padding: 12px;
+  border-radius: 0.5em;
+  border-bottom: 1px solid #EEE;
+}
+.genre > button {
+  color: #FFF;
+  background-color: black;
+  padding: 4px;
+  border: 1px solid #FFF;
+  border-radius: 0.25em;
+  margin-left: 6px;
+}
+.genre-form {
+  padding: 22px;
+}
+.genre-form > input {
+  width: 60%;
+  padding: 8px;
+  border-radius: 0.25em;
+}
+.genre-form > button {
+  color: #000;
+  background-color: #a5eafc;
+  padding: 10px;
+  border: 1px solid #FFF;
+  border-radius: 0.25em;
+}
+
 .modal {
   position: fixed;
   top:50%; left:50%;
@@ -82,9 +114,9 @@
 
 /* Small screens less than 720px */
 @media screen and (max-width: 720px) {
-  .modal { width: 100%; }
+  .modal { width: 98%; }
   .comment-form > input {
-    width: 100%;
+    width: 96%;
   }
 }
 

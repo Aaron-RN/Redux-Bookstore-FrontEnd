@@ -18,7 +18,7 @@ const Comments = ({ book, comment, removeCommentFromBook }) => {
 };
 
 Comments.defaultProps = {
-  comment: [],
+  comment: {},
 };
 
 Comments.propTypes = {

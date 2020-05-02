@@ -107,7 +107,7 @@ const fetchBookList = () => dispatch => {
 // Genres Populate List
 const fetchGenres = () => dispatch => {
   dispatch(fetchRequest());
-  axios.get(`${URL}api/v1/genre`)
+  axios.get(`${URL}api/v1/genres`)
     .then(response => {
       dispatch(fetchRequestSuccess(response.statusText));
       dispatch(fetchGenresSuccess(response.data));
@@ -197,12 +197,13 @@ const removeCommentFromBook = (book, comment) => dispatch => {
 // Genres requests
 const addGenreToDB = genre => dispatch => {
   dispatch(fetchRequest());
-  axios.post(`${URL}api/v1/genre`, {
+  axios.post(`${URL}api/v1/genres`, {
     name: genre,
   })
     .then(response => {
+      const newGenre = response.data.data;
       dispatch(fetchRequestSuccess(response.data.message));
-      dispatch(createGenre(genre));
+      dispatch(createGenre(newGenre));
     })
     .catch(error => {
       dispatch(fetchRequestFailure(error.response.data.error));
@@ -211,7 +212,7 @@ const addGenreToDB = genre => dispatch => {
 
 const removeGenreFromDB = genre => dispatch => {
   dispatch(fetchRequest());
-  axios.delete(`${URL}api/v1/genre/${genre.id}`)
+  axios.delete(`${URL}api/v1/genres/${genre.id}`)
     .then(response => {
       dispatch(fetchRequestSuccess(response.data.message));
       dispatch(removeGenre(genre));

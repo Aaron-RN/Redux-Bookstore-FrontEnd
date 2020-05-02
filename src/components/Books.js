@@ -5,7 +5,7 @@ const Books = ({ book, removeBookFromList, toggleModal }) => {
   const percentage = Math.floor(Math.random() * 100);
   const piePercent = Math.round(percentage / 25) * 25;
   return (
-    <div className="book" key={book.id}>
+    <div className="book">
       <div id="left">
         <h5 className="category font-header">{book.genre}</h5>
         <h2 className="title font-header">{book.title}</h2>
