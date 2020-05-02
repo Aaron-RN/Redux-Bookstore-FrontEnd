@@ -126,9 +126,9 @@ const addBookToList = book => dispatch => {
     genre: book.genre,
   })
     .then(response => {
-      const newBook = response.data;
+      const newBook = response.data.data;
       dispatch(fetchRequestSuccess(response.data.message));
-      dispatch(createBook(newBook.data));
+      dispatch(createBook(newBook));
     })
     .catch(error => {
       dispatch(fetchRequestFailure(error.response.data.error));
