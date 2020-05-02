@@ -11,7 +11,7 @@ const Books = ({ book, removeBookFromList, toggleModal }) => {
         <h2 className="title font-header">{book.title}</h2>
         <h4 className="author">{book.author}</h4>
         <div className="actions">
-          <button type="button" onClick={() => toggleModal()}>Comments</button>
+          <button type="button" onClick={() => toggleModal('comments', book)}>Comments</button>
           <button type="button" onClick={() => removeBookFromList(book)}>
             Remove Book
           </button>
@@ -43,6 +43,7 @@ Books.propTypes = {
     title: PropTypes.string,
     author: PropTypes.string,
     genre: PropTypes.string,
+    comments: PropTypes.instanceOf(Array),
   }).isRequired,
   removeBookFromList: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,

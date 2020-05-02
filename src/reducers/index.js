@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
   genres: genresReducer,
   filter: filterReducer,
   status: loaderReducer,
-  showModal: modalReducer,
+  modal: modalReducer,
 });
 
 export default rootReducer;

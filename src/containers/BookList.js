@@ -89,8 +89,8 @@ const mapDispatchToProps = dispatch => ({
   changeFilter: category => {
     dispatch(changeFilter(category));
   },
-  toggleModal: () => {
-    dispatch(toggleModal());
+  toggleModal: (modalType, selectedObject) => {
+    dispatch(toggleModal(modalType, selectedObject));
   },
 });
 

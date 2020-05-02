@@ -12,9 +12,17 @@ const bookReducer = (state = [], action) => {
     case REMOVE_BOOK:
       return state.filter(book => book.id !== action.book.id);
     case CREATE_COMMENT:
-      return [...state, action.book];
+      return [...state.filter(book => book.id !== action.book.id),
+        {
+          ...action.book,
+          comments: [...action.book.comments, action.comment],
+        }].sort((a, b) => a.id - b.id);
     case REMOVE_COMMENT:
-      return state.filter(book => book.id !== action.book.id);
+      return [...state.filter(book => book.id !== action.book.id),
+        {
+          ...action.book,
+          comments: [...action.book.comments.filter(comment => comment.id !== action.comment.id)],
+        }].sort((a, b) => a.id - b.id);
     default:
       return state;
   }

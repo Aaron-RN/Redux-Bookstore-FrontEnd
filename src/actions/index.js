@@ -15,6 +15,7 @@ const CREATE_BOOK = 'CREATE_BOOK';
 const REMOVE_BOOK = 'REMOVE_BOOK';
 const CHANGE_FILTER = 'CHANGE_FILTER';
 const TOGGLE_MODAL = 'TOGGLE_MODAL';
+const REFRESH_MODAL = 'REFRESH_MODAL';
 
 const fetchRequest = () => ({
   type: FETCH_REQUEST,
@@ -49,13 +50,15 @@ const removeBook = book => ({
   book,
 });
 
-const createComment = comment => ({
+const createComment = (book, comment) => ({
   type: CREATE_COMMENT,
+  book,
   comment,
 });
 
-const removeComment = comment => ({
+const removeComment = (book, comment) => ({
   type: REMOVE_COMMENT,
+  book,
   comment,
 });
 
@@ -74,8 +77,15 @@ const changeFilter = genre => ({
   genre,
 });
 
-const toggleModal = () => ({
+const toggleModal = (modalType, selectedObject) => ({
   type: TOGGLE_MODAL,
+  modalType,
+  selectedObject,
+});
+
+const refreshModal = selectedObject => ({
+  type: REFRESH_MODAL,
+  selectedObject,
 });
 
 
@@ -144,8 +154,19 @@ const addCommentToBook = (book, comment) => dispatch => {
     body: comment,
   })
     .then(response => {
+      const newComment = response.data.data;
       dispatch(fetchRequestSuccess(response.data.message));
-      dispatch(createComment(book, comment));
+      dispatch(createComment(book, newComment));
+      dispatch(fetchRequest());
+      axios.get(`${URL}api/v1/books/${book.id}`)
+        .then(response => {
+          const newBook = response.data.data;
+          dispatch(fetchRequestSuccess(response.data.message));
+          dispatch(refreshModal(newBook));
+        })
+        .catch(error => {
+          dispatch(fetchRequestFailure(error.response.data.error));
+        });
     })
     .catch(error => {
       dispatch(fetchRequestFailure(error.response.data.error));
@@ -154,10 +175,19 @@ const addCommentToBook = (book, comment) => dispatch => {
 
 const removeCommentFromBook = (book, comment) => dispatch => {
   dispatch(fetchRequest());
-  axios.delete(`${URL}api/v1/books/${book.id}`)
+  axios.delete(`${URL}api/v1/books/${book.id}/comments/${comment.id}`)
     .then(response => {
       dispatch(fetchRequestSuccess(response.data.message));
       dispatch(removeComment(book, comment));
+      axios.get(`${URL}api/v1/books/${book.id}`)
+        .then(response => {
+          const newBook = response.data.data;
+          dispatch(fetchRequestSuccess(response.data.message));
+          dispatch(refreshModal(newBook));
+        })
+        .catch(error => {
+          dispatch(fetchRequestFailure(error.response.data.error));
+        });
     })
     .catch(error => {
       dispatch(fetchRequestFailure(error.response.data.error));
@@ -195,9 +225,9 @@ export {
   CREATE_BOOK, REMOVE_BOOK, CHANGE_FILTER, FETCH_BOOKLIST,
   FETCH_GENRES, CREATE_GENRE, REMOVE_GENRE, CREATE_COMMENT, REMOVE_COMMENT,
   FETCH_REQUEST, FETCH_REQUEST_SUCCESS, FETCH_REQUEST_FAILURE,
-  TOGGLE_MODAL,
+  TOGGLE_MODAL, REFRESH_MODAL,
   changeFilter, addBookToList, removeBookFromList,
   fetchBookList, fetchGenres, addGenreToDB, removeGenreFromDB,
   addCommentToBook, removeCommentFromBook,
-  toggleModal,
+  toggleModal, refreshModal,
 };

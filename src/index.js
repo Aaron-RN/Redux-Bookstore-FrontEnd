@@ -13,7 +13,7 @@ const initialState = {
   books: [],
   genres: ['Action', 'Biography', 'Kids', 'Learning', 'Sci-Fi', 'Horor', 'History'],
   status: { isLoading: false, errors: [] },
-  showModal: false,
+  modal: { showModal: false, type: 'comments', selectedObject: {} },
 };
 
 const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
