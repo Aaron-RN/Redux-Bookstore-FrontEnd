@@ -1,14 +1,59 @@
+.comment {
+  padding: 12px;
+  border-radius: 0.5em;
+  border-bottom: 1px solid #EEE;
+}
+.comment > .date {
+  font-size: 12px;
+}
+.comment-body {
+  padding-left: 6px;
+}
+.comment > button {
+  color: #FFF;
+  background-color: black;
+  padding: 4px;
+  border: 1px solid #FFF;
+  border-radius: 0.25em;
+  margin-left: 6px;
+}
+.comment-form {
+  padding: 22px;
+}
+.comment-form > input {
+  width: 80%;
+  padding: 8px;
+  border-radius: 0.25em;
+}
+.comment-form > button {
+  color: #000;
+  background-color: #a5eafc;
+  padding: 10px;
+  border: 1px solid #FFF;
+  border-radius: 0.25em;
+}
+
+.modalClose {
+  width: 100%;
+  text-align: center;
+  padding: 28px;
+  border: none;
+  background-color: #D44;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 14px;
+}
 .modal {
-  position: absolute;
-  top:0; left:0;
+  position: fixed;
+  top:50%; left:50%;
   display: block;
-  width: 600px;
+  max-width: 600px;
   background: white;
   border: 1px solid #ccc;
   transition: 1.1s ease-out;
   box-shadow: -2rem 2rem 2rem rgba(black, 0.2);
   filter: blur(0);
-  transform: scale(1);  
+  transform: scale(1) translate(-50%, -50%);  
   opacity: 0.95;
 }
 .modalContent {
@@ -33,4 +78,24 @@
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   line-height: 1;
+}
+
+/* Small screens less than 720px */
+@media screen and (max-width: 720px) {
+  .modal { width: 100%; }
+  .comment-form > input {
+    width: 100%;
+  }
+}
+
+/* Medium devices (landscape tablets, 720px - 1024px) */
+@media only screen and (min-width: 721px) and (max-width: 1023px) {
+  .modal { min-width: 500px; }
+
+}
+
+/* Large devices (laptops/desktops, 1024px and up) */
+@media only screen and (min-width: 1024px) {
+  .modal { min-width: 600px; }
+
 }

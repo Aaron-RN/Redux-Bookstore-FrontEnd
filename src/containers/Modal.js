@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Comment from '../components/Comments';
-import { addCommentToBook, removeCommentFromBook, refreshModal } from '../actions/index';
+import { addCommentToBook, removeCommentFromBook, toggleModal } from '../actions/index';
 import '../assets/css/modal.css';
 
 class Modal extends React.Component {
@@ -22,14 +22,11 @@ class Modal extends React.Component {
   }
 
   handleSubmit(e) {
-    const { addCommentToBook, modal, refreshModal, books } = this.props;
+    const { addCommentToBook, modal } = this.props;
     const { selectedObject } = modal;
     const { comment } = this.state;
     e.preventDefault();
     addCommentToBook(selectedObject, comment);
-    // const newObject = books.filter(book => book.id === selectedObject.id)[0];
-    // console.log(newObject);
-    // refreshModal(newObject);
     this.reset();
   }
 
@@ -40,7 +37,7 @@ class Modal extends React.Component {
   }
 
   render() {
-    const { modal, removeCommentFromBook, refreshModal } = this.props;
+    const { modal, removeCommentFromBook, toggleModal } = this.props;
     const { selectedObject } = modal;
     const { comments } = selectedObject;
     let renderMain;
@@ -49,7 +46,13 @@ class Modal extends React.Component {
         <div className="modal">
           <div className="modalContent">
             <header>
-              <div />
+              <button
+                type="button"
+                className="modalClose"
+                onClick={() => toggleModal('comments', selectedObject)}
+              >
+                Close
+              </button>
             </header>
             <main>
               <h2>{selectedObject.title}</h2>
@@ -59,12 +62,18 @@ class Modal extends React.Component {
                   comment={comment}
                   key={comment.id + selectedObject.title}
                   removeCommentFromBook={removeCommentFromBook}
-                  refreshModal={refreshModal}
                 />
               ))}
             </main>
-            <footer>
-              <input name="comment" type="text" placeholder="type comment here..." onChange={this.handleChange} />
+            <footer className="comment-form">
+              <input
+                name="comment"
+                type="text"
+                placeholder="type comment here..."
+                minLength="3"
+                maxLength="450"
+                onChange={this.handleChange}
+              />
               <button type="button" onClick={this.handleSubmit}> Comment </button>
             </footer>
           </div>
@@ -76,11 +85,10 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  books: PropTypes.instanceOf(Array).isRequired,
   modal: PropTypes.instanceOf(Object).isRequired,
   addCommentToBook: PropTypes.func.isRequired,
   removeCommentFromBook: PropTypes.func.isRequired,
-  refreshModal: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -95,8 +103,8 @@ const mapDispatchToProps = dispatch => ({
   addCommentToBook: (book, comment) => {
     dispatch(addCommentToBook(book, comment));
   },
-  refreshModal: selectedObject => {
-    dispatch(refreshModal(selectedObject));
+  toggleModal: (modalType, selectedObject) => {
+    dispatch(toggleModal(modalType, selectedObject));
   },
 });
 

@@ -2,9 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Comments = ({ book, comment, removeCommentFromBook }) => {
+  const date = new Date(comment.created_at);
   return (
-    <div>
-      <div>
+    <div className="comment">
+      <div className="date">
+        {date.toString().slice(0, 15)}
+        ...
+      </div>
+      <div className="comment-body">
         {comment.body}
       </div>
       <button type="button" onClick={() => removeCommentFromBook(book, comment)}>Remove</button>
