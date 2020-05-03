@@ -1,6 +1,6 @@
 import { FETCH_REQUEST, FETCH_REQUEST_SUCCESS, FETCH_REQUEST_FAILURE } from '../actions/index';
 
-const loaderReducer = (state = { isLoading: false, errors: '' }, action) => {
+const loaderReducer = (state = { isLoading: false, form: '', errors: '' }, action) => {
   switch (action.type) {
     case FETCH_REQUEST:
       return {
@@ -16,6 +16,7 @@ const loaderReducer = (state = { isLoading: false, errors: '' }, action) => {
       return {
         isLoading: false,
         errors: action.response,
+        form: action.form,
       };
     default:
       return state;

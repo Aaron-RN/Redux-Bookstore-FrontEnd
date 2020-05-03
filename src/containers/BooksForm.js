@@ -49,19 +49,23 @@ class BooksForm extends React.Component {
   render() {
     const { title, author, genre } = this.state;
     const { status, genres } = this.props;
-    const { errors } = status;
+    const { errors, form } = status;
     const errorDiv = error => (
       <div key={error}>
         {error}
       </div>
     );
+    const showErrors = form === 'bookForm' ? (
+      <div className="errors">
+        {errors.map(error => errorDiv(error))}
+      </div>
+    ) : null;
+
     return (
       <div className="bg-header round-bottom box-shadow">
         <div className="center max-width-90 border-top">
           <div className="formTitle">Add New Book</div>
-          <div className="errors">
-            {errors.map(error => errorDiv(error))}
-          </div>
+          {showErrors}
           <form ref={this.selectForm} onSubmit={this.handleSubmit} className="bookForm">
             <div>
               <input

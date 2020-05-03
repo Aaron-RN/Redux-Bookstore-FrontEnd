@@ -25,9 +25,10 @@ const fetchRequestSuccess = response => ({
   type: FETCH_REQUEST_SUCCESS,
   response,
 });
-const fetchRequestFailure = response => ({
+const fetchRequestFailure = (response, form = '') => ({
   type: FETCH_REQUEST_FAILURE,
   response,
+  form,
 });
 
 const fetchBookListSuccess = books => ({
@@ -131,7 +132,7 @@ const addBookToList = book => dispatch => {
       dispatch(createBook(newBook));
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'bookForm'));
     });
 };
 
@@ -143,7 +144,7 @@ const removeBookFromList = book => dispatch => {
       dispatch(removeBook(book));
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'bookForm'));
     });
 };
 
@@ -169,7 +170,7 @@ const addCommentToBook = (book, comment) => dispatch => {
         });
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'commentForm'));
     });
 };
 
@@ -190,7 +191,7 @@ const removeCommentFromBook = (book, comment) => dispatch => {
         });
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'commentForm'));
     });
 };
 
@@ -206,7 +207,7 @@ const addGenreToDB = genre => dispatch => {
       dispatch(createGenre(newGenre));
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'genreForm'));
     });
 };
 
@@ -218,7 +219,7 @@ const removeGenreFromDB = genre => dispatch => {
       dispatch(removeGenre(genre));
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'genreForm'));
     });
 };
 

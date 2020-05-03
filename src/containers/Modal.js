@@ -17,6 +17,10 @@ class Modal extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.commentForm = React.createRef();
+    this.commentInput = React.createRef();
+    this.genreForm = React.createRef();
+    this.genreInput = React.createRef();
   }
 
   handleChange(e) {
@@ -32,10 +36,12 @@ class Modal extends React.Component {
     e.preventDefault();
     if (e.target.name === 'comment') addCommentToBook(selectedObject, comment);
     if (e.target.name === 'genre') addGenreToDB(genre);
-    this.reset();
+    this.reset(e);
   }
 
-  reset() {
+  reset(e) {
+    if (e.target.name === 'comment') this.commentInput.current.value = '';
+    if (e.target.name === 'genre') this.genreInput.current.value = '';
     this.setState({
       comment: '',
       genre: '',
@@ -44,10 +50,27 @@ class Modal extends React.Component {
 
   render() {
     const {
-      modal, genres, removeCommentFromBook, removeGenreFromDB, toggleModal,
+      status, modal, genres, removeCommentFromBook, removeGenreFromDB, toggleModal,
     } = this.props;
     const { selectedObject } = modal;
     const { comments } = selectedObject;
+    const { errors, form } = status;
+    const errorDiv = error => (
+      <div key={error}>
+        {error}
+      </div>
+    );
+    const showErrorsGenre = form === 'genreForm' ? (
+      <div className="errors">
+        {errors.map(error => errorDiv(error))}
+      </div>
+    ) : null;
+    const showErrorsComments = form === 'commentForm' ? (
+      <div className="errors">
+        {errors.map(error => errorDiv(error))}
+      </div>
+    ) : null;
+
     let renderMain;
     if (modal.type === 'comments' && modal.showModal) {
       renderMain = (
@@ -73,8 +96,10 @@ class Modal extends React.Component {
                 />
               ))}
             </main>
-            <footer className="comment-form">
+            <footer ref={this.commentForm} className="comment-form">
+              {showErrorsComments}
               <input
+                ref={this.commentInput}
                 name="comment"
                 type="text"
                 placeholder="type comment here..."
@@ -111,8 +136,10 @@ class Modal extends React.Component {
                 />
               ))}
             </main>
-            <footer className="genre-form">
+            <footer ref={this.genreForm} className="genre-form">
+              {showErrorsGenre}
               <input
+                ref={this.genreInput}
                 name="genre"
                 type="text"
                 placeholder="type genre here..."
@@ -131,6 +158,7 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
+  status: PropTypes.instanceOf(Object).isRequired,
   genres: PropTypes.instanceOf(Array).isRequired,
   modal: PropTypes.instanceOf(Object).isRequired,
   addCommentToBook: PropTypes.func.isRequired,
@@ -141,6 +169,7 @@ Modal.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  status: state.status,
   genres: state.genres,
   modal: state.modal,
 });
