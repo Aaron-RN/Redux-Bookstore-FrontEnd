@@ -6,9 +6,16 @@ const FETCH_REQUEST = 'FETCH_REQUEST';
 const FETCH_REQUEST_SUCCESS = 'FETCH_REQUEST_SUCCESS';
 const FETCH_REQUEST_FAILURE = 'FETCH_REQUEST_FAILURE';
 const FETCH_BOOKLIST = 'FETCH_BOOKLIST';
+const FETCH_GENRES = 'FETCH_GENRES';
+const CREATE_GENRE = 'CREATE_GENRE';
+const REMOVE_GENRE = 'REMOVE_GENRE';
+const CREATE_COMMENT = 'CREATE_COMMENT';
+const REMOVE_COMMENT = 'REMOVE_COMMENT';
 const CREATE_BOOK = 'CREATE_BOOK';
 const REMOVE_BOOK = 'REMOVE_BOOK';
 const CHANGE_FILTER = 'CHANGE_FILTER';
+const TOGGLE_MODAL = 'TOGGLE_MODAL';
+const REFRESH_MODAL = 'REFRESH_MODAL';
 
 const fetchRequest = () => ({
   type: FETCH_REQUEST,
@@ -18,14 +25,20 @@ const fetchRequestSuccess = response => ({
   type: FETCH_REQUEST_SUCCESS,
   response,
 });
-const fetchRequestFailure = response => ({
+const fetchRequestFailure = (response, form = '') => ({
   type: FETCH_REQUEST_FAILURE,
   response,
+  form,
 });
 
 const fetchBookListSuccess = books => ({
   type: FETCH_BOOKLIST,
   response: books,
+});
+
+const fetchGenresSuccess = genres => ({
+  type: FETCH_GENRES,
+  response: genres,
 });
 
 const createBook = book => ({
@@ -38,11 +51,48 @@ const removeBook = book => ({
   book,
 });
 
+const createComment = (book, comment) => ({
+  type: CREATE_COMMENT,
+  book,
+  comment,
+});
+
+const removeComment = (book, comment) => ({
+  type: REMOVE_COMMENT,
+  book,
+  comment,
+});
+
+const createGenre = genre => ({
+  type: CREATE_GENRE,
+  genre,
+});
+
+const removeGenre = genre => ({
+  type: REMOVE_GENRE,
+  genre,
+});
+
 const changeFilter = genre => ({
   type: CHANGE_FILTER,
   genre,
 });
 
+const toggleModal = (modalType, selectedObject) => ({
+  type: TOGGLE_MODAL,
+  modalType,
+  selectedObject,
+});
+
+const refreshModal = selectedObject => ({
+  type: REFRESH_MODAL,
+  selectedObject,
+});
+
+
+// Asyncronous Requests to Backend API
+
+// BookList Populate List
 const fetchBookList = () => dispatch => {
   dispatch(fetchRequest());
   axios.get(`${URL}`)
@@ -55,6 +105,20 @@ const fetchBookList = () => dispatch => {
     });
 };
 
+// Genres Populate List
+const fetchGenres = () => dispatch => {
+  dispatch(fetchRequest());
+  axios.get(`${URL}api/v1/genres`)
+    .then(response => {
+      dispatch(fetchRequestSuccess(response.statusText));
+      dispatch(fetchGenresSuccess(response.data));
+    })
+    .catch(error => {
+      dispatch(fetchRequestFailure(error.response.data.error));
+    });
+};
+
+// Book requests
 const addBookToList = book => dispatch => {
   dispatch(fetchRequest());
   axios.post(`${URL}api/v1/books`, {
@@ -63,12 +127,12 @@ const addBookToList = book => dispatch => {
     genre: book.genre,
   })
     .then(response => {
-      const newBook = response.data;
+      const newBook = response.data.data;
       dispatch(fetchRequestSuccess(response.data.message));
-      dispatch(createBook(newBook.data));
+      dispatch(createBook(newBook));
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'bookForm'));
     });
 };
 
@@ -80,13 +144,92 @@ const removeBookFromList = book => dispatch => {
       dispatch(removeBook(book));
     })
     .catch(error => {
-      dispatch(fetchRequestFailure(error.response.data.error));
+      dispatch(fetchRequestFailure(error.response.data.error, 'bookForm'));
+    });
+};
+
+// Comments requests
+const addCommentToBook = (book, comment) => dispatch => {
+  dispatch(fetchRequest());
+  axios.post(`${URL}api/v1/books/${book.id}/comments`, {
+    body: comment,
+  })
+    .then(response => {
+      const newComment = response.data.data;
+      dispatch(fetchRequestSuccess(response.data.message));
+      dispatch(createComment(book, newComment));
+      dispatch(fetchRequest());
+      axios.get(`${URL}api/v1/books/${book.id}`)
+        .then(response => {
+          const newBook = response.data.data;
+          dispatch(fetchRequestSuccess(response.data.message));
+          dispatch(refreshModal(newBook));
+        })
+        .catch(error => {
+          dispatch(fetchRequestFailure(error.response.data.error));
+        });
+    })
+    .catch(error => {
+      dispatch(fetchRequestFailure(error.response.data.error, 'commentForm'));
+    });
+};
+
+const removeCommentFromBook = (book, comment) => dispatch => {
+  dispatch(fetchRequest());
+  axios.delete(`${URL}api/v1/books/${book.id}/comments/${comment.id}`)
+    .then(response => {
+      dispatch(fetchRequestSuccess(response.data.message));
+      dispatch(removeComment(book, comment));
+      axios.get(`${URL}api/v1/books/${book.id}`)
+        .then(response => {
+          const newBook = response.data.data;
+          dispatch(fetchRequestSuccess(response.data.message));
+          dispatch(refreshModal(newBook));
+        })
+        .catch(error => {
+          dispatch(fetchRequestFailure(error.response.data.error));
+        });
+    })
+    .catch(error => {
+      dispatch(fetchRequestFailure(error.response.data.error, 'commentForm'));
+    });
+};
+
+// Genres requests
+const addGenreToDB = genre => dispatch => {
+  dispatch(fetchRequest());
+  axios.post(`${URL}api/v1/genres`, {
+    name: genre,
+  })
+    .then(response => {
+      const newGenre = response.data.data;
+      dispatch(fetchRequestSuccess(response.data.message));
+      dispatch(createGenre(newGenre));
+    })
+    .catch(error => {
+      dispatch(fetchRequestFailure(error.response.data.error, 'genreForm'));
+    });
+};
+
+const removeGenreFromDB = genre => dispatch => {
+  dispatch(fetchRequest());
+  axios.delete(`${URL}api/v1/genres/${genre.id}`)
+    .then(response => {
+      dispatch(fetchRequestSuccess(response.data.message));
+      dispatch(removeGenre(genre));
+    })
+    .catch(error => {
+      dispatch(fetchRequestFailure(error.response.data.error, 'genreForm'));
     });
 };
 
 export {
   CREATE_BOOK, REMOVE_BOOK, CHANGE_FILTER, FETCH_BOOKLIST,
+  FETCH_GENRES, CREATE_GENRE, REMOVE_GENRE, CREATE_COMMENT, REMOVE_COMMENT,
   FETCH_REQUEST, FETCH_REQUEST_SUCCESS, FETCH_REQUEST_FAILURE,
+  TOGGLE_MODAL, REFRESH_MODAL,
   changeFilter, addBookToList, removeBookFromList,
-  fetchBookList,
+  fetchBookList, fetchGenres, addGenreToDB, removeGenreFromDB,
+  addCommentToBook, removeCommentFromBook,
+  toggleModal, refreshModal, fetchRequestSuccess,
 };

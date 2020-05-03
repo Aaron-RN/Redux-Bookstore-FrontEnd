@@ -91,6 +91,13 @@ button:disabled {
   overflow: hidden;
 }
 
+.errors {
+  font-size: 16px;
+  color: #D22;
+  text-align: left;
+  padding: 1em;
+}
+
 .loader {
   width: 180px;
   height: 180px;

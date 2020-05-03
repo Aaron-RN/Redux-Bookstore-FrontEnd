@@ -6,6 +6,14 @@
 .bookSection {
   padding: 2em;
 }
+.genres-button {
+  padding: 8px;
+  color: #BBB;
+  background-color: transparent;
+  border: 1px solid #70518d;
+  border-radius: 0.25em;
+}
+
 .book {
   align-items: center;
   border: 1px solid #3b3546; 

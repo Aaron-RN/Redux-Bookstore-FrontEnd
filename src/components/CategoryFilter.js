@@ -1,17 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import '../assets/css/CategoryFilter.css';
-import { allCategories } from '../constants/categories';
 
 const CategoryFilter = ({
-  changeFilter,
+  changeFilter, genres,
 }) => {
   const selectCat = React.useRef(null);
+  const allGenres = [
+    { id: 9999, name: 'All' }, ...genres,
+  ];
+
   return (
     <div>
       <select ref={selectCat} name="category" placeholder="Category" onChange={() => changeFilter(selectCat.current.value)}>
-        {allCategories.map(category => (
-          <option key={category}>{category}</option>
+        {allGenres.map(genre => (
+          <option key={genre.id + genre.name}>{genre.name}</option>
         ))}
       </select>
     </div>
@@ -19,6 +22,7 @@ const CategoryFilter = ({
 };
 
 CategoryFilter.propTypes = {
+  genres: PropTypes.instanceOf(Array).isRequired,
   changeFilter: PropTypes.func.isRequired,
 };
 
