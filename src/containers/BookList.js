@@ -51,7 +51,7 @@ const BookList = ({
               className="genres-button"
               onClick={() => toggleModal('genres', {})}
             >
-              Genres +
+              <span>Genres +</span>
             </button>
             <CategoryFilter changeFilter={changeFilter} genres={genres} />
           </div>

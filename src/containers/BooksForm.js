@@ -10,7 +10,6 @@ class BooksForm extends React.Component {
     const { genres } = this.props;
 
     this.state = {
-      // id: Math.floor(Math.random() * 1000),
       title: '',
       author: '',
       genre: genres[0].name,
@@ -38,7 +37,6 @@ class BooksForm extends React.Component {
     this.selectForm.current.scrollIntoView({ behavior: 'smooth' });
     const { genres } = this.props;
     this.setState({
-      // id: Math.floor(Math.random() * 1000),
       title: '',
       author: '',
       genre: genres[0].name,
