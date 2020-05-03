@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Error from './Errors';
 import Genre from './Genres';
 
 const GenreModal = ({
-  handleChange, handleSubmit, removeGenreFromDB, toggleModal, genres, errors,
+  grabChildrenRefs, handleChange, handleSubmit, clearErrors,
+  removeGenreFromDB, toggleModal, genres, errors,
 }) => {
-  const genreForm = React.useRef(null);
+  const genreInput = React.useRef(null);
+
+  useEffect(() => {
+    grabChildrenRefs(genreInput);
+  });
 
   return (
     <div className="modal">
@@ -15,7 +20,10 @@ const GenreModal = ({
           <button
             type="button"
             className="modalClose"
-            onClick={() => toggleModal('genres', {})}
+            onClick={() => {
+              clearErrors();
+              toggleModal('comments', {});
+            }}
           >
             Close
           </button>
@@ -30,9 +38,10 @@ const GenreModal = ({
             />
           ))}
         </main>
-        <footer ref={genreForm} className="genre-form">
+        <footer className="genre-form">
           <Error errors={errors} />
           <input
+            ref={genreInput}
             name="genre"
             type="text"
             placeholder="type genre here..."
@@ -50,10 +59,12 @@ const GenreModal = ({
 GenreModal.propTypes = {
   genres: PropTypes.instanceOf(Array).isRequired,
   errors: PropTypes.instanceOf(Array).isRequired,
+  grabChildrenRefs: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   removeGenreFromDB: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
 };
 
 export default GenreModal;

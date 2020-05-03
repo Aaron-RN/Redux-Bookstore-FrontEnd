@@ -5,6 +5,7 @@ import CommentModal from '../components/CommentModal';
 import GenreModal from '../components/GenreModal';
 import {
   addCommentToBook, removeCommentFromBook, addGenreToDB, removeGenreFromDB, toggleModal,
+  fetchRequestSuccess,
 } from '../actions/index';
 import '../assets/css/modal.css';
 
@@ -15,10 +16,14 @@ class Modal extends React.Component {
       comment: '',
       genre: '',
     };
+    this.grabChildrenRefs = this.grabChildrenRefs.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.commentForm = React.createRef();
-    this.genreForm = React.createRef();
+    this.inputSelected = null;
+  }
+
+  grabChildrenRefs(e) {
+    this.inputSelected = e;
   }
 
   handleChange(e) {
@@ -38,8 +43,7 @@ class Modal extends React.Component {
   }
 
   reset() {
-    // if (e.target.name === 'comment') this.commentInput.current.value = '';
-    // if (e.target.name === 'genre') this.genreInput.current.value = '';
+    this.inputSelected.current.value = '';
     this.setState({
       comment: '',
       genre: '',
@@ -49,6 +53,7 @@ class Modal extends React.Component {
   render() {
     const {
       status, modal, genres, removeCommentFromBook, removeGenreFromDB, toggleModal,
+      clearErrors,
     } = this.props;
     const { selectedObject } = modal;
     const { comments } = selectedObject;
@@ -65,6 +70,8 @@ class Modal extends React.Component {
           handleSubmit={this.handleSubmit}
           removeCommentFromBook={removeCommentFromBook}
           toggleModal={toggleModal}
+          grabChildrenRefs={this.grabChildrenRefs}
+          clearErrors={clearErrors}
         />
       );
     }
@@ -77,6 +84,8 @@ class Modal extends React.Component {
           handleSubmit={this.handleSubmit}
           removeGenreFromDB={removeGenreFromDB}
           toggleModal={toggleModal}
+          grabChildrenRefs={this.grabChildrenRefs}
+          clearErrors={clearErrors}
         />
       );
     }
@@ -94,6 +103,7 @@ Modal.propTypes = {
   addGenreToDB: PropTypes.func.isRequired,
   removeGenreFromDB: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -117,6 +127,9 @@ const mapDispatchToProps = dispatch => ({
   },
   toggleModal: (modalType, selectedObject) => {
     dispatch(toggleModal(modalType, selectedObject));
+  },
+  clearErrors: () => {
+    dispatch(fetchRequestSuccess());
   },
 });
 

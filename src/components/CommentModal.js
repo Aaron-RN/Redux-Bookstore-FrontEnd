@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Error from './Errors';
 import Comment from './Comments';
 
 const CommentModal = ({
-  handleChange, handleSubmit, removeCommentFromBook, toggleModal, book, comments, errors,
+  grabChildrenRefs, handleChange, handleSubmit, clearErrors,
+  removeCommentFromBook, toggleModal, book, comments, errors,
 }) => {
-  const commentForm = React.useRef(null);
+  const commentInput = React.useRef(null);
+
+  useEffect(() => {
+    grabChildrenRefs(commentInput);
+  });
 
   return (
     <div className="modal">
@@ -15,7 +20,10 @@ const CommentModal = ({
           <button
             type="button"
             className="modalClose"
-            onClick={() => toggleModal('comments', {})}
+            onClick={() => {
+              clearErrors();
+              toggleModal('comments', {});
+            }}
           >
             Close
           </button>
@@ -31,9 +39,10 @@ const CommentModal = ({
             />
           ))}
         </main>
-        <footer ref={commentForm} className="comment-form">
+        <footer className="comment-form">
           <Error errors={errors} />
           <input
+            ref={commentInput}
             name="comment"
             type="text"
             placeholder="type comment here..."
@@ -58,10 +67,12 @@ CommentModal.propTypes = {
   }).isRequired,
   comments: PropTypes.instanceOf(Array).isRequired,
   errors: PropTypes.instanceOf(Array).isRequired,
+  grabChildrenRefs: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   removeCommentFromBook: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
 };
 
 export default CommentModal;

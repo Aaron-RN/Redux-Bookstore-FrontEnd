@@ -231,5 +231,5 @@ export {
   changeFilter, addBookToList, removeBookFromList,
   fetchBookList, fetchGenres, addGenreToDB, removeGenreFromDB,
   addCommentToBook, removeCommentFromBook,
-  toggleModal, refreshModal,
+  toggleModal, refreshModal, fetchRequestSuccess,
 };
